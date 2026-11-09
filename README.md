@@ -173,7 +173,8 @@ The end-to-end script drives a complete trading cycle — product, supplier, pur
 ## Documentation
 
 - [Setup guide](docs/SETUP.md)
-- [Deployment guide](docs/DEPLOYMENT.md)
+- [Deployment guide (single host)](docs/DEPLOYMENT.md)
+- [Deploy on Vercel + Render](docs/DEPLOY-VERCEL-RENDER.md)
 - [Backup and restore](docs/BACKUP-RESTORE.md)
 - [Architecture and invariants](docs/ARCHITECTURE.md)
 - [API reference](docs/API.md)

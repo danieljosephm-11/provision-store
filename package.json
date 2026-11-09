@@ -24,6 +24,7 @@
     "db:generate": "npm run db:generate -w @ps/api",
     "db:migrate": "npm run db:migrate -w @ps/api",
     "db:seed": "npm run db:seed -w @ps/api",
+    "db:seed:if-empty": "npm run db:seed:if-empty -w @ps/api",
     "db:reset": "npm run db:reset -w @ps/api",
     "db:studio": "npm run db:studio -w @ps/api",
     "format": "prettier --write \"**/*.{ts,tsx,json,md,css}\""

@@ -12,7 +12,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { formatQty, productSchema } from '@ps/shared';
-import { api, ApiError, buildQuery, openDocument } from '@/lib/api';
+import { api, ApiError, assetUrl, buildQuery, openDocument } from '@/lib/api';
 import { formatINR } from '@/lib/shared';
 import { useDebouncedValue } from '@/lib/hooks';
 import { useAuth } from '@/contexts/auth';
@@ -773,7 +773,7 @@ function ProductFormDialog({
 
           <div className="flex items-center gap-3 rounded-lg border p-2.5">
             {form.imageUrl ? (
-              <img src={form.imageUrl} alt="Product" className="h-12 w-12 rounded-md border object-cover" />
+              <img src={assetUrl(form.imageUrl)} alt="Product" className="h-12 w-12 rounded-md border object-cover" />
             ) : (
               <span className="flex h-12 w-12 items-center justify-center rounded-md bg-slate-100 text-slate-400">
                 <Package className="h-5 w-5" />

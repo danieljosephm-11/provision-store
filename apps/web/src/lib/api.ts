@@ -1,4 +1,5 @@
 const BASE = (import.meta.env.VITE_API_URL as string | undefined) ?? '/api/v1';
+const API_ORIGIN = BASE.startsWith('http') ? new URL(BASE).origin : '';
 
 let accessToken: string | null = null;
 let unauthorizedHandler: (() => void) | null = null;
@@ -166,6 +167,17 @@ export function buildQuery(params: Record<string, unknown>): string {
   }
   const qs = search.toString();
   return qs ? `?${qs}` : '';
+}
+
+/**
+ * Uploaded files are stored as root-relative `/uploads/...` paths. When the API
+ * lives on a different origin (e.g. Vercel web + Render API) those paths must be
+ * resolved against the API origin or the browser requests them from the web host.
+ */
+export function assetUrl(url: string | null | undefined): string {
+  if (!url) return '';
+  if (API_ORIGIN && url.startsWith('/uploads/')) return `${API_ORIGIN}${url}`;
+  return url;
 }
 
 export { BASE as API_BASE };

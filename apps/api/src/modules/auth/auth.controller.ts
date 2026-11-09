@@ -5,12 +5,23 @@ import * as service from './auth.service';
 export const REFRESH_COOKIE = 'ps_refresh';
 
 function cookieOptions(): CookieOptions {
+  const sameSite = env.COOKIE_SAME_SITE;
   return {
     httpOnly: true,
-    secure: env.COOKIE_SECURE,
-    sameSite: 'lax',
+    // SameSite=None is only honoured on Secure cookies.
+    secure: env.COOKIE_SECURE || sameSite === 'none',
+    sameSite,
     path: '/api/v1/auth',
     maxAge: env.REFRESH_TOKEN_TTL_DAYS * 24 * 60 * 60 * 1000,
+  };
+}
+
+function clearCookieOptions(): CookieOptions {
+  const sameSite = env.COOKIE_SAME_SITE;
+  return {
+    path: '/api/v1/auth',
+    secure: env.COOKIE_SECURE || sameSite === 'none',
+    sameSite,
   };
 }
 
@@ -32,14 +43,14 @@ export async function refresh(req: Request, res: Response) {
     const { refreshToken: _omit, ...body } = result;
     res.json(body);
   } catch (error) {
-    res.clearCookie(REFRESH_COOKIE, { path: '/api/v1/auth' });
+    res.clearCookie(REFRESH_COOKIE, clearCookieOptions());
     throw error;
   }
 }
 
 export async function logout(req: Request, res: Response) {
   await service.logout(readRefresh(req), req.user?.id);
-  res.clearCookie(REFRESH_COOKIE, { path: '/api/v1/auth' });
+  res.clearCookie(REFRESH_COOKIE, clearCookieOptions());
   res.json({ message: 'Signed out' });
 }
 

@@ -138,5 +138,5 @@ if (Wait-Url 'http://localhost:5173' 1) {
 Write-Host ''
 Write-Host 'Demo stack is running.'
 Write-Host "  Open:  http://localhost:5173"
-Write-Host '  Login: admin@provisionstore.local / Admin@12345'
+Write-Host '  Login: admin@provisionstore.local / the password in SEED_ADMIN_PASSWORD'
 Write-Host "  Logs:  $logDir"

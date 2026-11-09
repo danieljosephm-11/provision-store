@@ -18,6 +18,12 @@ const envSchema = z.object({
   REFRESH_TOKEN_TTL_DAYS: z.coerce.number().int().min(1).max(365).default(30),
   BCRYPT_ROUNDS: z.coerce.number().int().min(10).max(15).default(12),
   COOKIE_SECURE: bool,
+  /**
+   * `lax` is correct when the web app and API share a site (default).
+   * Set `none` when they are on different registrable domains, e.g. Vercel web
+   * plus Render API. Browsers require Secure whenever SameSite=None is used.
+   */
+  COOKIE_SAME_SITE: z.enum(['lax', 'strict', 'none']).default('lax'),
   UPLOAD_DIR: z.string().default('uploads'),
   MAX_UPLOAD_MB: z.coerce.number().int().min(1).max(25).default(5),
   ENABLE_CRON: bool,
