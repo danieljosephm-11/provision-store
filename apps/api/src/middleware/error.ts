@@ -6,6 +6,15 @@ import { logger } from '../lib/logger';
 import { env } from '../config/env';
 
 export function notFoundHandler(req: Request, res: Response) {
+  // Anything that is not an API or upload request is a browser visit: send it
+  // to the web app so http://localhost:4000 and deep links still work.
+  const isApiRequest =
+    req.originalUrl.startsWith('/api/') || req.originalUrl.startsWith('/uploads/');
+  if (req.method === 'GET' && !isApiRequest) {
+    res.redirect(302, `${env.APP_URL.replace(/\/$/, '')}${req.originalUrl}`);
+    return;
+  }
+
   res.status(404).json({
     error: {
       code: 'NOT_FOUND',

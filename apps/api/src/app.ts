@@ -47,6 +47,21 @@ export function createApp() {
   app.use(requestId);
   app.use(pinoHttp({ logger, quietReqLogger: true, genReqId: (req) => (req as express.Request).requestId }));
 
+  // Friendly entry points so the bare host never shows a raw 404.
+  app.get('/', (_req, res) => {
+    res.redirect(302, env.APP_URL);
+  });
+
+  app.get('/api/v1', (_req, res) => {
+    res.json({
+      name: 'Provision Store API',
+      version: 'v1',
+      health: '/api/v1/health',
+      docs: '/api/v1/health',
+      web: env.APP_URL,
+    });
+  });
+
   app.get('/api/v1/health', async (_req, res) => {
     try {
       await prisma.$queryRaw`SELECT 1`;
