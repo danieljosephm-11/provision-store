@@ -49,9 +49,12 @@ services:
         value: true
       - key: COOKIE_SAME_SITE
         value: none
-      # Add APP_URL and CORS_ORIGINS in the Render dashboard after the first
-      # Vercel deploy. They are intentionally omitted here so the blueprint
-      # never ships a placeholder origin that could be trusted by accident.
+      # The React static site below. If you move the web app to Vercel, change
+      # both values to the Vercel production URL.
+      - key: APP_URL
+        value: https://provision-store-web.onrender.com
+      - key: CORS_ORIGINS
+        value: https://provision-store-web.onrender.com
       - key: UPLOAD_DIR
         value: uploads
       - key: MAX_UPLOAD_MB
