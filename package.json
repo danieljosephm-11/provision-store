@@ -17,6 +17,7 @@
     "dev:web": "npm run dev -w @ps/web",
     "build": "npm run build -w @ps/api && npm run build -w @ps/web",
     "start": "npm run start -w @ps/api",
+    "preview:web": "node scripts/serve-web.mjs",
     "test": "npm run test -w @ps/api",
     "test:watch": "npm run test:watch -w @ps/api",
     "typecheck": "npm run typecheck -w @ps/api && npm run typecheck -w @ps/web",
