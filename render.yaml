@@ -1,11 +1,12 @@
-# Render Blueprint: PostgreSQL + the Express API.
-# The React app is deployed separately on Vercel (see vercel.json).
+# Render Blueprint: PostgreSQL, the Express API, and the React static site.
+# The web app can also be hosted on Vercel instead (see vercel.json); the API
+# only needs APP_URL and CORS_ORIGINS to point at whichever CDN serves it.
 #
 # Deploy: https://render.com/deploy?repo=https://github.com/danieljosephm-11/provision-store
 #
-# After Render creates the service it gives you an API URL such as
-# https://provision-store-api.onrender.com. Use that URL as VITE_API_URL in
-# Vercel (append /api/v1), and put your Vercel URL in APP_URL and CORS_ORIGINS.
+# After the first deploy, copy the static site URL (for example
+# https://provision-store-web.onrender.com) into APP_URL and CORS_ORIGINS on
+# the API service. The static site already points VITE_API_URL at the API.
 
 databases:
   - name: provision-store-db
@@ -74,7 +75,6 @@ services:
   - type: web
     name: provision-store-web
     runtime: static
-    plan: free
     branch: main
     autoDeploy: true
     buildCommand: npm ci && npm run build -w @ps/web
