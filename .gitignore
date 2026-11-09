@@ -1,0 +1,17 @@
+node_modules/
+dist/
+dist-ssr/
+*.local
+*.tsbuildinfo
+.env
+.env.*
+!.env.example
+coverage/
+*.log
+npm-debug.log*
+.DS_Store
+Thumbs.db
+apps/api/uploads/
+apps/api/prisma/*.db
+apps/web/.vite/
+.playwright/

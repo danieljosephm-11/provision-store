@@ -1,0 +1,37 @@
+{
+  "name": "provision-store",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Smart Provision Store Management System - POS, inventory, CRM, purchasing, expenses and analytics",
+  "type": "module",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "engines": {
+    "node": ">=22.9"
+  },
+  "scripts": {
+    "dev": "concurrently -k -n api,web -c yellow,cyan \"npm:dev:api\" \"npm:dev:web\"",
+    "dev:api": "npm run dev -w @ps/api",
+    "dev:web": "npm run dev -w @ps/web",
+    "build": "npm run build -w @ps/api && npm run build -w @ps/web",
+    "start": "npm run start -w @ps/api",
+    "test": "npm run test -w @ps/api",
+    "test:watch": "npm run test:watch -w @ps/api",
+    "typecheck": "npm run typecheck -w @ps/api && npm run typecheck -w @ps/web",
+    "db:generate": "npm run db:generate -w @ps/api",
+    "db:migrate": "npm run db:migrate -w @ps/api",
+    "db:seed": "npm run db:seed -w @ps/api",
+    "db:reset": "npm run db:reset -w @ps/api",
+    "db:studio": "npm run db:studio -w @ps/api",
+    "format": "prettier --write \"**/*.{ts,tsx,json,md,css}\""
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2",
+    "prettier": "^3.4.2"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
+  }
+}
