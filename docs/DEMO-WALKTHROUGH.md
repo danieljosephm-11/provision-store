@@ -4,30 +4,64 @@ A presenter script for the Smart Provision Store submission. It covers the
 whole application briefly and the CRM in depth, using the seeded demo data.
 
 **Time:** 18–22 minutes
-**URL:** http://localhost:5173
-**Login:** `admin@provisionstore.local` / the value configured as `SEED_ADMIN_PASSWORD`
+**Live demo:** https://provision-store-web.onrender.com
+**Local demo:** http://localhost:5173
+**Login:** `admin@provisionstore.local` / the demo password kept outside this repository (`SEED_ADMIN_PASSWORD`)
 **Store:** Smart Provision Store
+
+> The live demo runs on Render's free plan. The API sleeps when idle and the
+> first request can take 30–60 seconds, so open the site once before you
+> present. The free PostgreSQL database expires on 9 December 2026.
 
 ---
 
 ## 1. Before the demo (5 minutes before)
 
-Run these checks in order:
+### Option A — live demo (recommended)
+
+1. Health check: open
+   https://provision-store-api.onrender.com/api/v1/health and confirm
+   `{"status":"ok"}`.
+2. Web app: open https://provision-store-web.onrender.com and sign in.
+3. If the CRM looks empty, reload the demo data with the live command below.
+4. Keep this script open on a second screen or print it.
+
+### Option B — local stack
 
 1. PostgreSQL is running on port 5432.
 2. API health: open http://localhost:4000/api/v1/health — expect `{"status":"ok"}`.
 3. Web app: open http://localhost:5173 and sign in.
-4. If the database was reset or the CRM looks empty, reload the demo data:
+4. `scripts/start-demo.ps1` starts all three services in one command.
 
-   ```powershell
-   $env:Path = "D:\opencode\tools\node;" + $env:Path
-   $env:API_URL = "http://localhost:4000/api/v1"
-   $env:SEED_ADMIN_PASSWORD = "<the password configured for the seeded administrator>"
-   node scripts/demo-data.mjs
-   ```
+### Reloading the demo data
 
-   The script is idempotent. Re-running it also resets the seeded follow-ups to
-   open, so the queue is ready after a rehearsal.
+The script is idempotent. Re-running it also resets the seeded follow-ups to
+open, so the queue is ready after a rehearsal.
+
+Live (Render):
+
+```powershell
+$env:Path = "D:\opencode\tools\node;" + $env:Path
+$env:API_URL = "https://provision-store-api.onrender.com/api/v1"
+$env:DEMO_WEB_URL = "https://provision-store-web.onrender.com"
+$env:DEMO_EMAIL = "admin@provisionstore.local"
+$env:DEMO_PASSWORD = "<demo password>"
+$env:DATABASE_URL = "<Render external database URL>"
+$env:DEMO_BACKDATE = "true"
+node scripts/demo-data.mjs
+```
+
+`DEMO_BACKDATE=true` needs the external database URL because it spreads history
+through a direct connection. The API itself creates everything else.
+
+Local:
+
+```powershell
+$env:Path = "D:\opencode\tools\node;" + $env:Path
+$env:API_URL = "http://localhost:4000/api/v1"
+$env:SEED_ADMIN_PASSWORD = "<the password configured for the seeded administrator>"
+node scripts/demo-data.mjs
+```
 
 **Demo data at a glance**
 

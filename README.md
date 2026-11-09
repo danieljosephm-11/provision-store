@@ -6,6 +6,18 @@ Built as a TypeScript monorepo with a React SPA, an Express REST API and Postgre
 
 ---
 
+## Live demo
+
+- **Web:** <https://provision-store-web.onrender.com>
+- **API health:** <https://provision-store-api.onrender.com/api/v1/health>
+
+Sign in with `admin@provisionstore.local` and the password configured as
+`SEED_ADMIN_PASSWORD`. The Render free plan sleeps when idle, so the first
+request can take 30–60 seconds; the free database expires on 9 December 2026.
+See [Deploy on Render](docs/DEPLOY-VERCEL-RENDER.md).
+
+---
+
 ## What is included
 
 | Area | Capabilities |
@@ -174,7 +186,7 @@ The end-to-end script drives a complete trading cycle — product, supplier, pur
 
 - [Setup guide](docs/SETUP.md)
 - [Deployment guide (single host)](docs/DEPLOYMENT.md)
-- [Deploy on Vercel + Render](docs/DEPLOY-VERCEL-RENDER.md)
+- [Deploy on Render (or Vercel + Render)](docs/DEPLOY-VERCEL-RENDER.md)
 - [Backup and restore](docs/BACKUP-RESTORE.md)
 - [Architecture and invariants](docs/ARCHITECTURE.md)
 - [API reference](docs/API.md)

@@ -10,6 +10,16 @@
  * Usage:
  *   API_URL=http://localhost:4000/api/v1 node scripts/demo-data.mjs
  *
+ * Environment:
+ *   DEMO_EMAIL / DEMO_PASSWORD   administrator login (password falls back to
+ *                                SEED_ADMIN_PASSWORD)
+ *   DEMO_WEB_URL                 printed at the end; defaults to localhost:5173
+ *   DEMO_BACKDATE=true           spread invoices, payments and activities over
+ *                                the last seven months via a direct database
+ *                                connection (DATABASE_URL). Without it the data
+ *                                is created with today's timestamps.
+ *   DATABASE_URL                 required only when DEMO_BACKDATE=true
+ *
  * The script is idempotent:
  *   - products are matched by SKU
  *   - customers are matched by mobile
@@ -22,6 +32,7 @@
  */
 const rawBase = (process.env.API_URL ?? 'http://localhost:4000/api/v1').replace(/\/$/, '');
 const base = rawBase.endsWith('/api/v1') ? rawBase : `${rawBase}/api/v1`;
+const webUrl = (process.env.DEMO_WEB_URL ?? 'http://localhost:5173').replace(/\/$/, '');
 const email = process.env.DEMO_EMAIL ?? 'admin@provisionstore.local';
 const password = process.env.DEMO_PASSWORD ?? process.env.SEED_ADMIN_PASSWORD;
 if (!password) throw new Error('Set DEMO_PASSWORD or SEED_ADMIN_PASSWORD before loading demo data.');
@@ -712,9 +723,13 @@ async function spreadHistory(invoiceResults, activityResults) {
     await prisma.$transaction(
       async (tx) => {
         // Ledger and loyalty rows are append-only by guard trigger. Backdating
-        // seeded history is the one legitimate exception, so suspend user
-        // triggers for this transaction only.
-        await tx.$executeRawUnsafe(`SET LOCAL session_replication_role = 'replica'`);
+        // seeded history is the one legitimate exception. A table owner can
+        // disable its own user triggers, and ALTER TABLE is transactional, so
+        // the guards come back on commit or rollback. This works on managed
+        // PostgreSQL (Render/RDS/Supabase) where the app role cannot set
+        // session_replication_role.
+        await tx.$executeRawUnsafe(`ALTER TABLE "CustomerLedger" DISABLE TRIGGER USER`);
+        await tx.$executeRawUnsafe(`ALTER TABLE "LoyaltyTransaction" DISABLE TRIGGER USER`);
 
         const invoicePlans = new Map(
           invoiceResults.map((row) => [row.invoice.id, row.plan]),
@@ -781,6 +796,9 @@ async function spreadHistory(invoiceResults, activityResults) {
             },
           });
         }
+
+        await tx.$executeRawUnsafe(`ALTER TABLE "CustomerLedger" ENABLE TRIGGER USER`);
+        await tx.$executeRawUnsafe(`ALTER TABLE "LoyaltyTransaction" ENABLE TRIGGER USER`);
       },
       { timeout: 120_000, maxWait: 20_000 },
     );
@@ -866,7 +884,7 @@ async function main() {
   await spreadCampaignDates(campaigns);
   await verify();
 
-  console.log('\nDemo data ready. Sign in at http://localhost:5173 and open /crm.');
+  console.log(`\nDemo data ready. Sign in at ${webUrl} and open /crm.`);
 }
 
 main().catch((error) => {
