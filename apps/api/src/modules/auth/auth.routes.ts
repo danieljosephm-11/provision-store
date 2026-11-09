@@ -8,13 +8,13 @@ import {
 } from '@ps/shared';
 import { authenticate } from '../../middleware/auth';
 import { validate } from '../../middleware/validate';
-import { authLimiter, loginLimiter } from '../../middleware/rate-limit';
+import { authLimiter, loginLimiter, refreshLimiter } from '../../middleware/rate-limit';
 import * as controller from './auth.controller';
 
 const router = Router();
 
 router.post('/login', loginLimiter, validate(loginSchema), controller.login);
-router.post('/refresh', authLimiter, controller.refresh);
+router.post('/refresh', refreshLimiter, controller.refresh);
 router.post('/logout', controller.logout);
 router.get('/me', authenticate, controller.me);
 router.post(
